@@ -97,12 +97,15 @@ func (app *VideoSrt) Run(video string) {
 	//上传音频至OSS
 	filelink := UploadAudioToClound(app.AliyunOss , tmpAudio)
 	//获取完整链接
-	filelink = app.AliyunOss.GetObjectFileUrl(filelink)
+	filelink, err := app.AliyunOss.GetObjectFileUrl(filelink)
+	if err != nil {
+		Log("音频URL处理错误, URL: " + filelink)
+	}
 
 	Log("上传文件成功 , 识别中 ...")
 
 	//阿里云录音文件识别
-	AudioResult := AliyunAudioRecognition(app.AliyunClound, "https://" + filelink , app.IntelligentBlock)
+	AudioResult := AliyunAudioRecognition(app.AliyunClound, filelink , app.IntelligentBlock)
 
 	Log("文件识别成功 , 字幕处理中 ...")
 

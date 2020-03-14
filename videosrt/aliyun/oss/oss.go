@@ -4,6 +4,7 @@ import (
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"strconv"
 	"time"
+	"net/url"
 )
 
 //SDK
@@ -72,6 +73,11 @@ func (c AliyunOss) UploadFile(localFileName string , objectName string) (string 
 
 
 //获取文件 url link
-func (c AliyunOss) GetObjectFileUrl(objectFile string) string {
-	return c.BucketDomain + "/" +  objectFile
+func (c AliyunOss) GetObjectFileUrl(objectFile string) (string, error) {
+	u, err := url.Parse(c.BucketDomain + "/" +  objectFile)
+	if err != nil {
+		return "", err
+	}
+	u.Scheme = "https"
+	return u.String(), nil
 }
